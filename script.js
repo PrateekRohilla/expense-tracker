@@ -12,7 +12,7 @@ renderTotal(totalExpense);
 
 //allExpenses at one place
 let allExpenses = [];
-let newArr = [];
+let savedArr = [];
 
 //onButtonClick add inputAmount to totalExpense
 function addExpenseToTotal() {
@@ -39,12 +39,42 @@ function addExpenseToTotal() {
   //store object in array
   allExpenses.push(expenseItem);
 
+  //store the array in local storage
+  storeData(expenseItem, totalExpense);
+
   document.querySelector('#inputAmount').value='';
   document.querySelector('#inputDesc').value='';
 
   //display added items in expenseTable
   renderList(allExpenses);
 
+}
+
+// storing the data in local  storage
+function storeData(expenseItem){
+    savedArr.push(expenseItem);
+    localStorage.setItem('saved', JSON.stringify(savedArr));
+    localStorage.setItem('total', totalExpense);
+}
+
+// on load function called to restore the state of app on page
+// refresh/reload or closed and reopened
+window.onload = function(){
+    if(localStorage.getItem('saved') === null){
+        console.log('original state');
+        return;
+    }
+    let arr = JSON.parse(localStorage.getItem('saved'));
+    arr.map(a => {
+        let dt = new Date(a.moment);
+        a.moment = dt;
+        savedArr.push(a);
+    });
+
+    let totExp = parseInt(localStorage.getItem('total'));
+    allExpenses = savedArr;
+    renderList(allExpenses);
+    renderTotal(totExp);
 }
 
 //listen to click event on add button
@@ -62,27 +92,33 @@ function getDateString(moment){
 
 }
 
-//Delete items
+// delete items
 function deleteItem(dateValue){
-    newArr=[];
-    allExpenses=allExpenses.filter((expense)=>
-    {if(expense.moment.valueOf()!==dateValue){
+    savedArr = [];
+    allExpenses = allExpenses.filter((expense) => {
+    if(expense.moment.valueOf() !== dateValue){
+        storeData(expense);
         return expense;
     }
     });
-    newTotal(allExpenses);
+    if(savedArr.length === 0){
+        localStorage.removeItem('saved');
+        localStorage.removeItem('total');
+    }
     renderList(allExpenses);
-    
+    newTotal(allExpenses);
 }
 
-//new total function to display new value of total on deletion of list items
+// new total called to display new value of total on deletion of list items
 function newTotal(expenses){
-let sum=0;
-for(let i=0;i<expenses.length;i++){
-    sum=sum+allExpenses[i].amount;
-}
-totalExpense=sum;
-renderTotal(sum);
+    let sum = 0;
+    for(let i=0; i<expenses.length; i++){
+        sum = sum + expenses[i].amount;
+    }
+    totalExpense = sum;
+    localStorage.setItem('total', sum);
+    renderTotal(sum);
+
 }
 
 // render total in nav bar
@@ -91,7 +127,6 @@ function renderTotal(totalExpense){
     headingEl.textContent=someText;
 
 }
-
 
 //view -- getting the updated array
 function renderList(arrOfList){
