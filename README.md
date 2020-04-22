@@ -1,14 +1,12 @@
 # Xpens Tracker
 Track your personal expenses with ease use `Xpens Tracker` Web App
 
-
-
 <br/>
 <br/>
 <br/>
 
-To Do
+ToDos
 ---
-- Implementing localStorage
-- Fix Minor Bugs
+- Add Dark/light theme toggle
+- Categorize Expenses
 - UI Improvements
