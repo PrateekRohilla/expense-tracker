@@ -1,5 +1,7 @@
 # Xpens Tracker
-Track your personal expenses with ease use `Xpens Tracker` Web App
+An app that helps you to track your personal expenses with ease
+
+[Live Demo](https://xpenstrack.netlify.app/)
 
 <br/>
 <br/>
